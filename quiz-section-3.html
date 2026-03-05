@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DollyGirls Chatter Training — Section 3 Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #000000;
+    --surface: #0d0d0d;
+    --surface2: #161616;
+    --border: #2a2a2a;
+    --accent: #ff2ecc;
+    --accent-dim: rgba(255,46,204,0.12);
+    --accent-glow: rgba(255,46,204,0.35);
+    --text: #ffffff;
+    --muted: #777777;
+    --success: #ff2ecc;
+    --danger: #ff4466;
+    --success-dim: rgba(255,46,204,0.1);
+    --danger-dim: rgba(255,68,102,0.1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'Nunito Sans', sans-serif;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 24px; position: relative; overflow-x: hidden;
+  }
+  body::before {
+    content: ''; position: fixed; top: -200px; left: -200px; width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,46,204,0.08) 0%, transparent 70%);
+    pointer-events: none; animation: drift 12s ease-in-out infinite alternate;
+  }
+  body::after {
+    content: ''; position: fixed; bottom: -200px; right: -200px; width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(255,46,204,0.05) 0%, transparent 70%);
+    pointer-events: none; animation: drift2 15s ease-in-out infinite alternate;
+  }
+  @keyframes drift { from { transform: translate(0,0); } to { transform: translate(40px, 30px); } }
+  @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-30px, -40px); } }
+  .container { width: 100%; max-width: 680px; position: relative; z-index: 1; }
+  .header { text-align: center; margin-bottom: 40px; animation: fadeUp 0.6s ease both; }
+  .badge {
+    display: inline-block; background: var(--accent-dim); border: 1px solid var(--accent);
+    color: var(--accent); font-family: 'Nunito', sans-serif; font-size: 10px;
+    letter-spacing: 3px; text-transform: uppercase; padding: 6px 14px; border-radius: 2px; margin-bottom: 20px;
+  }
+  h1 { font-family: 'Nunito', sans-serif; font-size: clamp(28px, 5vw, 42px); font-weight: 900; line-height: 1.1; letter-spacing: -0.5px; color: var(--text); }
+  h1 span { color: var(--accent); }
+  .subtitle { color: var(--muted); font-size: 12px; margin-top: 10px; letter-spacing: 1px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 36px; animation: fadeUp 0.6s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .entry-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; display: block; }
+  .entry-input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px 20px; color: var(--text); font-family: 'Nunito Sans', sans-serif; font-size: 16px;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s; margin-bottom: 24px;
+  }
+  .entry-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+  .entry-input::placeholder { color: var(--muted); }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .info-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; }
+  .info-box .val { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 800; color: var(--accent); }
+  .info-box .lbl { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
+  .btn {
+    width: 100%; background: var(--accent); color: #ffffff; border: none; border-radius: 8px;
+    padding: 16px; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800;
+    letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--accent-glow); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn-ghost:hover { background: var(--accent-dim); box-shadow: none; }
+  .progress-wrap { margin-bottom: 28px; }
+  .progress-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .q-counter { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+  .q-counter span { color: var(--accent); font-weight: 600; }
+  .progress-bar { height: 3px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.4s ease; box-shadow: 0 0 8px var(--accent-glow); }
+  .section-tag { display: inline-block; font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); padding: 4px 10px; border-radius: 2px; margin-bottom: 14px; }
+  .question-text { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 700; line-height: 1.45; margin-bottom: 24px; color: var(--text); }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option { display: flex; align-items: flex-start; gap: 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.15s; user-select: none; }
+  .option:hover:not(.locked) { border-color: var(--accent); background: var(--accent-dim); transform: translateX(4px); }
+  .option.selected { border-color: var(--accent); background: var(--accent-dim); }
+  .option.correct { border-color: var(--success); background: var(--success-dim); }
+  .option.wrong { border-color: var(--danger); background: var(--danger-dim); }
+  .option.locked { cursor: default; pointer-events: none; }
+  .opt-letter { min-width: 26px; height: 26px; border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--muted); transition: all 0.2s; flex-shrink: 0; }
+  .option.selected .opt-letter { border-color: var(--accent); color: var(--accent); }
+  .option.correct .opt-letter { border-color: var(--success); color: var(--success); background: var(--success-dim); }
+  .option.wrong .opt-letter { border-color: var(--danger); color: var(--danger); background: var(--danger-dim); }
+  .opt-text { font-size: 13px; line-height: 1.5; padding-top: 3px; }
+  .feedback { margin-top: 18px; padding: 14px 18px; border-radius: 8px; font-size: 12px; line-height: 1.6; display: none; animation: fadeUp 0.3s ease both; }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: var(--success-dim); border: 1px solid var(--success); color: var(--success); }
+  .feedback.wrong-fb { background: var(--danger-dim); border: 1px solid var(--danger); color: var(--danger); }
+  .nav { margin-top: 24px; }
+  .result-score { text-align: center; padding: 32px 0 24px; }
+  .score-ring { position: relative; width: 130px; height: 130px; margin: 0 auto 20px; }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring circle { fill: none; stroke-width: 8; stroke-linecap: round; }
+  .ring-bg { stroke: var(--border); }
+  .ring-fill { transition: stroke-dashoffset 1s ease; }
+  .score-num { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+  .score-num .big { font-family: 'Nunito', sans-serif; font-size: 32px; font-weight: 800; }
+  .score-num .pct { font-size: 10px; color: var(--muted); letter-spacing: 2px; }
+  .result-label { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .result-sub { font-size: 12px; color: var(--muted); margin-bottom: 28px; }
+  .result-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .rb-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+  .rb-box .num { font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 800; }
+  .rb-box .lbl { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
+  .rb-box.pass .num { color: var(--success); }
+  .rb-box.fail .num { color: var(--danger); }
+  .sending-msg { text-align: center; font-size: 11px; color: var(--muted); margin-bottom: 16px; letter-spacing: 1px; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="badge">Section 3 — Understanding Fans</div>
+    <h1><span>Dolly</span>Girls. Knowledge Quiz</h1>
+    <p class="subtitle">Fan Types · Buying Signals · Strategy</p>
+  </div>
+
+  <!-- ENTRY -->
+  <div class="card screen active" id="screen-entry">
+    <label class="entry-label" for="tg-input">Your Telegram Username</label>
+    <input class="entry-input" id="tg-input" type="text" placeholder="@yourusername" autocomplete="off"/>
+    <div class="info-grid">
+      <div class="info-box"><div class="val">15</div><div class="lbl">Questions</div></div>
+      <div class="info-box"><div class="val">80%</div><div class="lbl">Pass Mark</div></div>
+    </div>
+    <button class="btn" onclick="startQuiz()">Begin Assessment</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="card screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span class="q-counter">Question <span id="q-num">1</span> of <span id="q-total">15</span></span>
+        <span class="q-counter" id="q-section-label"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="section-tag" id="section-tag"></div>
+    <div class="question-text" id="question-text"></div>
+    <div class="options" id="options-list"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav"><button class="btn" id="next-btn" style="display:none" onclick="nextQuestion()">Next Question →</button></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="card screen" id="screen-results">
+    <div class="result-score">
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120" width="130" height="130">
+          <circle class="ring-bg" cx="60" cy="60" r="52"/>
+          <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+        </svg>
+        <div class="score-num">
+          <div class="big" id="score-pct">0%</div>
+          <div class="pct">SCORE</div>
+        </div>
+      </div>
+      <div class="result-label" id="result-label"></div>
+      <div class="result-sub" id="result-sub"></div>
+    </div>
+    <div class="result-breakdown">
+      <div class="rb-box pass"><div class="num" id="r-correct">0</div><div class="lbl">Correct</div></div>
+      <div class="rb-box fail"><div class="num" id="r-wrong">0</div><div class="lbl">Incorrect</div></div>
+    </div>
+    <div class="sending-msg" id="sending-msg">Saving your result...</div>
+    <button class="btn btn-ghost" onclick="retryQuiz()">Retake Quiz</button>
+  </div>
+
+</div>
+<script>
+const WEBHOOK_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+const SECTION_NAME = "Section 3 – Understanding Fans";
+const TOTAL = 15;
+
+const questions = [
+
+  // — FAN TYPES (8)
+  {
+    section: "Fan Types",
+    q: "A user's very first message is: 'Do you squirt?' — which fan type is this and what is your immediate strategy?",
+    opts: [
+      "Relationship-Seeking — slow down and build an emotional connection first",
+      "Fast-Track Sexual User — match their direct energy, build the fantasy briefly, and close within 2–3 messages",
+      "Sexual but Normal — reassure them and let them set the pace",
+      "Silent Watcher — send one greeting and leave them to observe"
+    ],
+    ans: 1,
+    fb: "This is a Fast-Track Sexual User. Their first message is immediately sexual and specific. Match their energy, do not slow them down with small talk. Gather what they want, build the fantasy briefly, and close quickly — reply within 1–2 minutes or you will lose the sale."
+  },
+  {
+    section: "Fan Types",
+    q: "A user asks if the model is single, uses romantic language, and keeps returning to the stream without spending. Which type are they and what is the key principle for handling them?",
+    opts: [
+      "Fast-Track Sexual User — close them quickly before they lose interest",
+      "Time Waster — begin the gradual withdrawal technique",
+      "Relationship-Seeking User — be patient, build the connection, never rush or force the sale",
+      "Fetish User — identify their specific kink and reference it in every message"
+    ],
+    ans: 2,
+    fb: "This is a Relationship-Seeking User — the most reliable indicator is asking if the model is single. These users have the highest long-term value. The key is patience — never rush them and never force the sale. The private, when it comes, should feel like a natural next step in the relationship they are building."
+  },
+  {
+    section: "Fan Types",
+    q: "A user compliments the model politely but then apologises for it, saying 'Sorry, don't mean to make you uncomfortable.' What type are they and what is the correct response?",
+    opts: [
+      "Fast-Track Sexual User — push hard for the private immediately",
+      "Sexual but Normal — reassure them, tell them you like it, and introduce that they are having an effect on the model",
+      "Silent Watcher — acknowledge briefly and leave them to observe",
+      "Lonely and Relationship-Seeking — redirect to emotional conversation topics"
+    ],
+    ans: 1,
+    fb: "This is a Sexual but Normal user — they are self-conscious and apologetic. The correct move is to reassure them and remove the embarrassment. A line like 'Don't apologise, I like it — it's turning me on a little if I'm honest' does a lot of work. It validates them, removes shame, and introduces the idea that they are having an effect on the model."
+  },
+  {
+    section: "Fan Types",
+    q: "A user's first message is: 'I've been watching you for weeks, I just never said anything.' How should you handle this moment?",
+    opts: [
+      "Immediately push for a private — they have clearly been building up to spending",
+      "Treat it the same as any new user with a standard greeting",
+      "Honour the moment — make them feel seen and ask what made them finally message today",
+      "Ask them why they never tipped during those weeks"
+    ],
+    ans: 2,
+    fb: "This is a Silent Watcher making first contact — a significant moment. Do not pivot immediately to a sale. Make them feel seen ('I always notice familiar faces even when they don't say anything') and ask what made them message today. Their answer tells you exactly how to handle them going forward."
+  },
+  {
+    section: "Fan Types",
+    q: "A user refers to themselves as a 'sub' and says they would do anything the model tells them. What is the correct strategy?",
+    opts: [
+      "Ignore the language and treat them like any other user",
+      "Ask them politely what they mean to make sure you understood correctly",
+      "Identify this as a Domination/Submission Fetish User and use commanding language — tell them what to do, not ask",
+      "Redirect them to the tip menu without engaging with the dynamic"
+    ],
+    ans: 2,
+    fb: "This is a Fetish User showing submission signals. Once the fetish is identified, every message should reference it. With submissive users, telling is stronger than asking — they want to be commanded. Use dominant language and frame every upsell around the dynamic they have established."
+  },
+  {
+    section: "Fan Types",
+    q: "A bronze-named user sends their Snapchat in the first message, asks for free content, and when you mention tipping says 'I don't have tokens, just do it.' What do you do?",
+    opts: [
+      "Engage politely and keep trying — they might convert eventually",
+      "Begin the gradual withdrawal — short replies, slower responses, move your energy to higher-value conversations",
+      "Block them immediately",
+      "Offer a small discount to keep them engaged"
+    ],
+    ans: 1,
+    fb: "This is a confirmed Time Waster. Sending social media unsolicited, asking for free content, and admitting they have no tokens are all clear signals. Begin the gradual withdrawal — slow your replies, shorten your messages, and focus your energy on users who show real intent. A friendly exit line like 'sorry no but you're welcome to watch' keeps the door neutral."
+  },
+  {
+    section: "Fan Types",
+    q: "A red-named user has been chatting for a while and showing time-wasting behaviour — making excuses every time a private is mentioned. Should you apply the full gradual withdrawal?",
+    opts: [
+      "Yes — time wasters get the same treatment regardless of their colour",
+      "No — red users are proven spenders. Give them more patience and keep them warm even if they are not spending today",
+      "No — red users should be pushed harder with more frequent private asks",
+      "Yes — but only after flagging them to management first"
+    ],
+    ans: 1,
+    fb: "Red and purple users who display time-wasting behaviour still get more patience than lower-colour users. They are proven spenders on the platform — it may just not be today. Keep them warm. The important exception is that bronze and silver time wasters get the gradual withdrawal much sooner."
+  },
+  {
+    section: "Fan Types",
+    q: "You send a tester and the user goes quiet, gives a one-word answer, and changes the subject. What is the correct move?",
+    opts: [
+      "Push through it — persistence pays off",
+      "Ask them directly if they want to go private to clear the air",
+      "Step back immediately — return to the level of conversation before the tester and make them comfortable again",
+      "End the conversation and move to another user"
+    ],
+    ans: 2,
+    fb: "A pull back is not a rejection of the model — it is a signal that emotional investment is not there yet. Never push through resistance. Step back immediately, return to casual conversation, and let the energy reset. Try a different tester only when they give another clear signal."
+  },
+
+  // — BUYING SIGNALS (7)
+  {
+    section: "Buying Signals",
+    q: "A user asks 'How much is a private?' — what should you do before answering?",
+    opts: [
+      "Answer immediately with the price and wait for their response",
+      "Ask them what they are looking for first before quoting a price",
+      "Hover over their username to check their token balance, then answer — if they can afford it, close immediately",
+      "Tell them to check the tip menu for pricing"
+    ],
+    ans: 2,
+    fb: "Asking how much is a direct buying signal — they are calculating whether they can afford it. Always check their token balance first by hovering over their name. If they have enough (240+ tokens for a standard private), answer briefly and close immediately. If not, redirect to the tip menu or public tipping."
+  },
+  {
+    section: "Buying Signals",
+    q: "A user says 'I just topped up, been wanting to come in here for a bit.' How urgent is this and why?",
+    opts: [
+      "Not urgent — they have just arrived and need time to settle in",
+      "Extremely urgent — fans rarely top up just in case. Catch them in this window and push while they are ready",
+      "Moderately urgent — finish other conversations first then come back to them",
+      "Not urgent — topping up does not mean they intend to spend"
+    ],
+    ans: 1,
+    fb: "Topping up is one of the strongest buying signals. Fans rarely top up just in case — they loaded tokens with intention. Engage more directly immediately, build momentum, and push while they are ready. This window closes fast."
+  },
+  {
+    section: "Buying Signals",
+    q: "A user types: 'Fuck I'm so close right now.' What is the correct response?",
+    opts: [
+      "Build arousal slowly with 3–4 flirty messages to make the moment last",
+      "Ask them what they are into before suggesting anything",
+      "Go straight to the tip menu immediately — no build-up, no pleasantries. This window is seconds wide",
+      "Invite them to private and wait for them to respond"
+    ],
+    ans: 2,
+    fb: "This is a verge signal — the window is seconds, not minutes. Do not build slowly. Go straight to the tip menu immediately. Something like 'Mmm then treat me and I'll help you get there... tip menu is right there.' If you build slowly here, they will finish on their own and leave without spending a single token."
+  },
+  {
+    section: "Buying Signals",
+    q: "A user tips 100 tokens and says 'I tipped so you'd notice me.' What is the single most important thing about your response?",
+    opts: [
+      "Thank them generically and move on to the next user",
+      "Push immediately for a private — they are clearly willing to spend",
+      "Acknowledge them personally and specifically — they tipped for recognition, not an action. Get this right and they will tip again and again",
+      "Ask them what they want in return for the tip"
+    ],
+    ans: 2,
+    fb: "This is an emotional tip — they tipped to be seen. The response is the most important one you will give this user. Be specific and personal: 'I saw — I always notice your name and it genuinely makes me smile when you're here.' This user will tip consistently because they know exactly what they get in return."
+  },
+  {
+    section: "Buying Signals",
+    q: "A user says 'Is there anything I can do for you tonight?' — what is the correct response?",
+    opts: [
+      "Say 'whatever you want to do is fine with me' to keep it open",
+      "Give a specific, personal, low-barrier direction — such as a public tip or a tip menu item with a reason attached",
+      "Invite them straight to private since they are clearly ready to spend",
+      "Thank them and tell them their presence is enough"
+    ],
+    ans: 1,
+    fb: "This is a textbook generosity signal — they want to act but need clear direction. Never respond vaguely. Give them something specific, personal, and low-barrier. For example: 'Even a little tip in the chat means a lot to me, it genuinely shows you care.' Specific + emotional + low barrier = conversion."
+  },
+  {
+    section: "Buying Signals",
+    q: "After a private ends, the user says 'I wish it was longer.' What does this signal and what should you do?",
+    opts: [
+      "Nothing — it is just a polite compliment, move on",
+      "Apologise that the private was short and offer a discount next time",
+      "This is an upsell signal — invite them back in, suggest topping up, and make clear the model was also enjoying it",
+      "Wait for them to suggest another private themselves before responding"
+    ],
+    ans: 2,
+    fb: "This is a post-private upsell signal — they wanted more. Invite them back immediately. Make it feel like the model was also enjoying it and is a little sad the private ended. Plants the seed for the next session and makes the next conversion feel natural rather than transactional."
+  },
+  {
+    section: "Buying Signals",
+    q: "A user has 120 tokens — not enough for a standard 4-minute private (240 minimum). They are clearly interested. What is the correct approach?",
+    opts: [
+      "Tell them to come back when they have enough tokens",
+      "End the conversation and focus on users who can afford a private",
+      "Redirect to the tip menu or encourage a picture send — extract value from what they can afford and keep the energy alive",
+      "Immediately lower the private minimum without asking management"
+    ],
+    ans: 2,
+    fb: "A fan who cannot afford a private is not a dead lead. Redirect to the tip menu or picture send (on StripChat, sending photos costs tokens). Keep the conversation warm and the energy alive — fans in this state often top up within minutes. A fan with 120 tokens who is engaged can still spend all 120 on a tip menu item. If a shorter private is considered, a manager must confirm first."
+  }
+
+];
+
+// ── STATE
+let telegramName = "";
+let currentQ = 0;
+let score = 0;
+let answered = false;
+let shuffled = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  const raw = document.getElementById('tg-input').value.trim();
+  if (!raw) { document.getElementById('tg-input').focus(); return; }
+  telegramName = raw.startsWith('@') ? raw : '@' + raw;
+  shuffled = shuffle(questions);
+  currentQ = 0; score = 0;
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+document.getElementById('tg-input').addEventListener('keydown', e => { if (e.key === 'Enter') startQuiz(); });
+
+function renderQuestion() {
+  answered = false;
+  const q = shuffled[currentQ];
+  const letters = ['A','B','C','D'];
+  document.getElementById('q-num').textContent = currentQ + 1;
+  document.getElementById('section-tag').textContent = q.section;
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('progress-fill').style.width = ((currentQ / TOTAL) * 100) + '%';
+  document.getElementById('next-btn').style.display = 'none';
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback'; fb.textContent = '';
+  const list = document.getElementById('options-list');
+  list.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `<div class="opt-letter">${letters[i]}</div><div class="opt-text">${opt}</div>`;
+    div.onclick = () => selectAnswer(i);
+    list.appendChild(div);
+  });
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = shuffled[currentQ];
+  const options = document.querySelectorAll('.option');
+  options.forEach(o => o.classList.add('locked'));
+  options[idx].classList.add('selected');
+  const fb = document.getElementById('feedback');
+  if (idx === q.ans) {
+    score++;
+    options[idx].classList.add('correct');
+    fb.className = 'feedback correct-fb show';
+    fb.textContent = '✓ Correct — ' + q.fb;
+  } else {
+    options[idx].classList.add('wrong');
+    options[q.ans].classList.add('correct');
+    fb.className = 'feedback wrong-fb show';
+    fb.textContent = '✗ Incorrect — ' + q.fb;
+  }
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ < TOTAL) { renderQuestion(); } else { showResults(); }
+}
+
+function showResults() {
+  showScreen('screen-results');
+  const pct = Math.round((score / TOTAL) * 100);
+  const passed = pct >= 80;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-pct').style.color = passed ? 'var(--success)' : 'var(--danger)';
+  document.getElementById('r-correct').textContent = score;
+  document.getElementById('r-wrong').textContent = TOTAL - score;
+  document.getElementById('result-label').textContent = passed ? '🎉 You Passed!' : '❌ Not Quite';
+  document.getElementById('result-label').style.color = passed ? 'var(--success)' : 'var(--danger)';
+  document.getElementById('result-sub').textContent = passed
+    ? `Great work, ${telegramName}. You're cleared to move forward.`
+    : `${telegramName}, you needed 80% to pass. Review the material and try again.`;
+  const ring = document.getElementById('ring-fill');
+  ring.style.stroke = passed ? 'var(--success)' : 'var(--danger)';
+  setTimeout(() => { ring.style.strokeDashoffset = 326.7 - (326.7 * pct / 100); }, 100);
+  sendToSheets(telegramName, pct, score, passed);
+}
+
+function retryQuiz() {
+  shuffled = shuffle(questions);
+  currentQ = 0; score = 0;
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+async function sendToSheets(telegram, pct, correct, passed) {
+  const msg = document.getElementById('sending-msg');
+  if (!WEBHOOK_URL || WEBHOOK_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+    msg.textContent = "⚠ No webhook configured — result not saved.";
+    return;
+  }
+  try {
+    await fetch(WEBHOOK_URL, {
+      method: "POST", mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        telegram, section: SECTION_NAME, score: pct,
+        correct, wrong: TOTAL - correct,
+        passed: passed ? "PASS" : "FAIL",
+        timestamp: new Date().toISOString()
+      })
+    });
+    msg.textContent = "✓ Result saved successfully.";
+  } catch (e) {
+    msg.textContent = "⚠ Could not save result — check webhook URL.";
+  }
+}
+</script>
+</body>
+</html>
